@@ -83,17 +83,11 @@ for station, tobs in tobs_list:
     
     all_tobs.append(tobs_dict)
 
-# Create a query that will calculate the daily normals 
-# (i.e. the averages for tmin, tmax, and tavg for all historic data matching a specific month and day)
-
-
-
 ###########################################
 # CREATE MAIN FLASK APP
 ############################################    
 # 2. Create an app, being sure to pass __name__
 app_climate = Flask(__name__)
-
 
 # 3. Define what to do when a user hits the index route
 @app_climate.route("/")
@@ -109,29 +103,32 @@ def home():
         f"/api/v1.0/< start >/< end ><br/>"       
     )
 
-# 4. Define what to do when a user hits the /about route
+# 4. Define what to do when a user hits the /api/v1.0/precipitation route
 @app_climate.route("/api/v1.0/precipitation")
 def precp():
     """Return the precipitation data as json"""
    
     return jsonify(all_precipitation)
-    
+
+# 5. Define what to do when a user hits the /api/v1.0/stations route    
 @app_climate.route("/api/v1.0/stations")
 def station_list():
     """Return the station data as json"""
    
     return jsonify(all_station)
-  
+
+# 6. Define what to do when a user hits the /api/v1.0/Tobs route    
 @app_climate.route("/api/v1.0/Tobs")
 def tempobs_list():
     """Return the tobs data as json"""
    
     return jsonify(all_tobs)
-   
+
+# 7. Define what to do when a user hits the /api/v1.0/<start> route  
 @app_climate.route("/api/v1.0/<start>")
 def start_list(start):
-    """Return the start date to max date data as json"""
-    # Create our session (link) from Python to the DB
+    """Return the start date to max date data min,avg,max as json"""
+    # Create new session (link) from Python to the DB
     session = Session(engine)   
 
     start_dt=func.strftime("%m-%d", start)
@@ -151,10 +148,11 @@ def start_list(start):
         
     return jsonify(data_temp_list)
 
+# 8. Define what to do when a user hits the /api/v1.0/<start>/<end> route 
 @app_climate.route("/api/v1.0/<start>/<end>")
 def start_end(start,end):
-    """Return the start date to max date data as json"""
-    # Create our session (link) from Python to the DB
+    """Return the start date to end date data min,avg,max as json"""
+    # Create new session (link) from Python to the DB
     session = Session(engine)   
 
     start_dt2=func.strftime("%m-%d", start)
